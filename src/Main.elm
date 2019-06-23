@@ -137,7 +137,7 @@ view model =
     , body =
         [ div [ class "wrapper" ]
             [ h1 []
-                [ a [ href "/" ] [ text "Elm SPA Demo" ]
+                [ a [ href "/" ] [ text "Elm SPA Demo Site" ]
                 ]
             , nav []
                 [ ul [ class "gNav" ]
