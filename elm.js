@@ -6107,7 +6107,7 @@ var author$project$Main$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										elm$html$Html$text('Elm SPA Demo Site')
+										elm$html$Html$text('Elm SPA Demo')
 									]))
 							])),
 						A2(
