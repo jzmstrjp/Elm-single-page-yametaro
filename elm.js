@@ -4421,7 +4421,7 @@ var elm$core$Basics$append = _Utils_append;
 var author$project$Main$routeToTitle = function (route) {
 	switch (route.$) {
 		case 'Home':
-			return 'トップページや';
+			return 'トップページやな';
 		case 'Page1':
 			return 'ページ1';
 		case 'Page2':
