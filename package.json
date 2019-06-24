@@ -1,15 +1,20 @@
 {
-  "name": "Elm-single-page-yametaro",
+  "name": "elm-single-page-yametaro",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/jzmstrjp/Elm-single-page-yametaro.git",
-  "author": "Takashi Tokumoto <t_tokumoto@yumemi.co.jp>",
-  "license": "MIT",
-  "devDependencies": {
-    "elm": "^0.19.0-bugfix2"
-  },
+  "description": "",
+  "main": "elm.js",
   "scripts": {
     "dev": "elm-live src/Main.elm --pushstate --start-page=custom.html -- --output=elm.js",
     "build": "elm make src/Main.elm --output elm.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jzmstrjp/Elm-single-page-yametaro.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jzmstrjp/Elm-single-page-yametaro/issues"
+  },
+  "homepage": "https://github.com/jzmstrjp/Elm-single-page-yametaro#readme"
 }
