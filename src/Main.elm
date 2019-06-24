@@ -77,7 +77,7 @@ routeToTitle : Route -> String
 routeToTitle route =
     case route of
         Home ->
-            "トップページやな"
+            "トップページやでえ"
 
         Page1 ->
             "ページ1"
