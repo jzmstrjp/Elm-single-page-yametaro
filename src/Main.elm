@@ -38,7 +38,14 @@ type alias Model =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model key url "SPA練習" Home, Cmd.none )
+    let
+        route =
+            toRoute url
+
+        title =
+            routeToTitle route
+    in
+    ( Model key url title route, Cmd.none )
 
 
 type Route
