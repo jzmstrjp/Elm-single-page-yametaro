@@ -6058,7 +6058,6 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Page$Home$view = 'Homeのページのview文字列';
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -6092,13 +6091,7 @@ var author$project$Main$view = function (model) {
 			if (_n0.$ === 'Home') {
 				return _List_fromArray(
 					[
-						A2(
-						elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								elm$html$Html$text(author$project$Page$Home$view)
-							]))
+						elm$html$Html$text('Home.view model')
 					]);
 			} else {
 				return _List_fromArray(

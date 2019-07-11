@@ -145,9 +145,7 @@ view model =
     , body =
         case model.route of
             Home ->
-                [ div []
-                    [ text Home.view ]
-                ]
+                [ text "Home.view model" ]
 
             _ ->
                 [ div [ class "wrapper" ]
