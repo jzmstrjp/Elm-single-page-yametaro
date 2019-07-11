@@ -6058,6 +6058,7 @@ var author$project$Main$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Page$Home$view = 'Homeのページのview文字列';
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -6086,212 +6087,228 @@ var elm$html$Html$Attributes$href = function (url) {
 };
 var author$project$Main$view = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('wrapper')
-					]),
-				_List_fromArray(
+		body: function () {
+			var _n0 = model.route;
+			if (_n0.$ === 'Home') {
+				return _List_fromArray(
 					[
 						A2(
-						elm$html$Html$h1,
+						elm$html$Html$div,
 						_List_Nil,
 						_List_fromArray(
 							[
-								A2(
-								elm$html$Html$a,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$href('/')
-									]),
-								_List_fromArray(
-									[
-										elm$html$Html$text('Elm SPA Demo')
-									]))
-							])),
+								elm$html$Html$text(author$project$Page$Home$view)
+							]))
+					]);
+			} else {
+				return _List_fromArray(
+					[
 						A2(
-						elm$html$Html$nav,
-						_List_Nil,
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('wrapper')
+							]),
 						_List_fromArray(
 							[
 								A2(
-								elm$html$Html$ul,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('gNav')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page1')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ1')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page2')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ2')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page3')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ3')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/user/yametaro')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('やめ太郎について')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/notfound')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('無いページ')
-													]))
-											]))
-									]))
-							])),
-						A2(
-						elm$html$Html$section,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$h2,
+								elm$html$Html$h1,
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text(model.title)
+										A2(
+										elm$html$Html$a,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$href('/')
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text('Elm SPA Demo')
+											]))
 									])),
-								function () {
-								var _n0 = model.route;
-								switch (_n0.$) {
-									case 'NotFound':
-										return A2(
-											elm$html$Html$div,
-											_List_Nil,
-											_List_fromArray(
-												[
-													A2(
-													elm$html$Html$p,
-													_List_Nil,
-													_List_fromArray(
-														[
-															elm$html$Html$text('このページは存在しません')
-														])),
-													A2(
-													elm$html$Html$p,
+								A2(
+								elm$html$Html$nav,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$ul,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('gNav')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$li,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$a,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$href('/page1')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('ページ1')
+															]))
+													])),
+												A2(
+												elm$html$Html$li,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$a,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$href('/page2')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('ページ2')
+															]))
+													])),
+												A2(
+												elm$html$Html$li,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$a,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$href('/page3')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('ページ3')
+															]))
+													])),
+												A2(
+												elm$html$Html$li,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$a,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$href('/user/yametaro')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('やめ太郎について')
+															]))
+													])),
+												A2(
+												elm$html$Html$li,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$a,
+														_List_fromArray(
+															[
+																elm$html$Html$Attributes$href('/notfound')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('無いページ')
+															]))
+													]))
+											]))
+									])),
+								A2(
+								elm$html$Html$section,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$h2,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(model.title)
+											])),
+										function () {
+										var _n1 = model.route;
+										switch (_n1.$) {
+											case 'NotFound':
+												return A2(
+													elm$html$Html$div,
 													_List_Nil,
 													_List_fromArray(
 														[
 															A2(
-															elm$html$Html$a,
+															elm$html$Html$p,
+															_List_Nil,
 															_List_fromArray(
 																[
-																	elm$html$Html$Attributes$href('/')
-																]),
+																	elm$html$Html$text('このページは存在しません')
+																])),
+															A2(
+															elm$html$Html$p,
+															_List_Nil,
 															_List_fromArray(
 																[
-																	elm$html$Html$text('ホームに戻る')
+																	A2(
+																	elm$html$Html$a,
+																	_List_fromArray(
+																		[
+																			elm$html$Html$Attributes$href('/')
+																		]),
+																	_List_fromArray(
+																		[
+																			elm$html$Html$text('ホームに戻る')
+																		]))
 																]))
-														]))
-												]));
-									case 'User':
-										var string = _n0.a;
-										return A2(
-											elm$html$Html$div,
-											_List_fromArray(
-												[
-													elm$html$Html$Attributes$class('body')
-												]),
-											_List_fromArray(
-												[
-													A2(
-													elm$html$Html$p,
-													_List_Nil,
+														]));
+											case 'User':
+												var string = _n1.a;
+												return A2(
+													elm$html$Html$div,
 													_List_fromArray(
 														[
-															elm$html$Html$text('ワイについて書く')
-														]))
-												]));
-									default:
-										return A2(
-											elm$html$Html$div,
-											_List_fromArray(
-												[
-													elm$html$Html$Attributes$class('body')
-												]),
-											_List_fromArray(
-												[
-													A2(
-													elm$html$Html$p,
-													_List_Nil,
+															elm$html$Html$Attributes$class('body')
+														]),
 													_List_fromArray(
 														[
-															elm$html$Html$text('内容')
-														]))
-												]));
-								}
-							}()
+															A2(
+															elm$html$Html$p,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	elm$html$Html$text('ワイについて書く')
+																]))
+														]));
+											default:
+												return A2(
+													elm$html$Html$div,
+													_List_fromArray(
+														[
+															elm$html$Html$Attributes$class('body')
+														]),
+													_List_fromArray(
+														[
+															A2(
+															elm$html$Html$p,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	elm$html$Html$text('内容')
+																]))
+														]));
+										}
+									}()
+									]))
 							]))
-					]))
-			]),
+					]);
+			}
+		}(),
 		title: model.title
 	};
 };
