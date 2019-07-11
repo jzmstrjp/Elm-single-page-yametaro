@@ -143,47 +143,55 @@ view : Model -> Browser.Document Msg
 view model =
     { title = model.title
     , body =
-        case model.route of
-            Home ->
-                [ text "Home.view model" ]
-
-            _ ->
-                [ div [ class "wrapper" ]
-                    [ h1 []
-                        [ a [ href "/" ] [ text "Elm SPA Demo" ]
-                        ]
-                    , nav []
-                        [ ul [ class "gNav" ]
-                            [ li [] [ a [ href "/page1" ] [ text "ページ1" ] ]
-                            , li [] [ a [ href "/page2" ] [ text "ページ2" ] ]
-                            , li [] [ a [ href "/page3" ] [ text "ページ3" ] ]
-                            , li [] [ a [ href "/user/yametaro" ] [ text "やめ太郎について" ] ]
-                            , li [] [ a [ href "/notfound" ] [ text "無いページ" ] ]
-                            ]
-                        ]
-                    , section []
-                        [ h2 [] [ text model.title ]
-                        , case model.route of
-                            NotFound ->
-                                div []
-                                    [ p []
-                                        [ text "このページは存在しません"
-                                        ]
-                                    , p []
-                                        [ a [ href "/" ] [ text "ホームに戻る" ]
-                                        ]
-                                    ]
-
-                            User string ->
-                                div [ class "body" ]
-                                    [ p [] [ text "ワイについて書く" ]
-                                    ]
-
-                            _ ->
-                                div [ class "body" ]
-                                    [ p [] [ text "内容" ]
-                                    ]
-                        ]
+        [ div [ class "wrapper" ]
+            [ h1 []
+                [ a [ href "/" ] [ text "Elm SPA Demo" ]
+                ]
+            , nav []
+                [ ul [ class "gNav" ]
+                    [ li [] [ a [ href "/page1" ] [ text "ページ1" ] ]
+                    , li [] [ a [ href "/page2" ] [ text "ページ2" ] ]
+                    , li [] [ a [ href "/page3" ] [ text "ページ3" ] ]
+                    , li [] [ a [ href "/user/yametaro" ] [ text "やめ太郎について" ] ]
+                    , li [] [ a [ href "/notfound" ] [ text "無いページ" ] ]
                     ]
                 ]
+            , section []
+                [ h2 [] [ text model.title ]
+                , div [ class "body" ]
+                    (case model.route of
+                        NotFound ->
+                            [ div []
+                                [ p []
+                                    [ text "このページは存在しません"
+                                    ]
+                                , p []
+                                    [ a [ href "/" ] [ text "ホームに戻る" ]
+                                    ]
+                                ]
+                            ]
+
+                        Home ->
+                            Home.view (changeModelType model)
+
+                        User string ->
+                            [ p [] [ text "ワイについて書く" ] ]
+
+                        _ ->
+                            [ p [] [ text "内容" ] ]
+                    )
+                ]
+            ]
+        ]
+    }
+
+
+type alias ModelForView =
+    { title : String
+    }
+
+
+changeModelType : Model -> ModelForView
+changeModelType model =
+    { title = model.title
     }
