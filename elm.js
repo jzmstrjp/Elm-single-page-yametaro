@@ -4422,12 +4422,6 @@ var author$project$Main$routeToTitle = function (route) {
 	switch (route.$) {
 		case 'Home':
 			return 'トップページ';
-		case 'Page1':
-			return 'ページ1';
-		case 'Page2':
-			return 'ページ2';
-		case 'Page3':
-			return 'ページ3';
 		case 'User':
 			var string = route.a;
 			return string + 'のページ';
@@ -4435,12 +4429,8 @@ var author$project$Main$routeToTitle = function (route) {
 			return 'Not Found';
 	}
 };
-var author$project$Main$NotFound = {$: 'NotFound'};
-var author$project$Main$Home = {$: 'Home'};
-var author$project$Main$Page1 = {$: 'Page1'};
-var author$project$Main$Page2 = {$: 'Page2'};
-var author$project$Main$Page3 = {$: 'Page3'};
-var author$project$Main$User = function (a) {
+var author$project$Route$Home = {$: 'Home'};
+var author$project$Route$User = function (a) {
 	return {$: 'User', a: a};
 };
 var elm$core$Basics$apL = F2(
@@ -4694,27 +4684,16 @@ var elm$url$Url$Parser$top = elm$url$Url$Parser$Parser(
 var author$project$Main$routeParser = elm$url$Url$Parser$oneOf(
 	_List_fromArray(
 		[
-			A2(elm$url$Url$Parser$map, author$project$Main$Home, elm$url$Url$Parser$top),
+			A2(elm$url$Url$Parser$map, author$project$Route$Home, elm$url$Url$Parser$top),
 			A2(
 			elm$url$Url$Parser$map,
-			author$project$Main$Page1,
-			elm$url$Url$Parser$s('page1')),
-			A2(
-			elm$url$Url$Parser$map,
-			author$project$Main$Page2,
-			elm$url$Url$Parser$s('page2')),
-			A2(
-			elm$url$Url$Parser$map,
-			author$project$Main$Page3,
-			elm$url$Url$Parser$s('page3')),
-			A2(
-			elm$url$Url$Parser$map,
-			author$project$Main$User,
+			author$project$Route$User,
 			A2(
 				elm$url$Url$Parser$slash,
 				elm$url$Url$Parser$s('user'),
 				elm$url$Url$Parser$string))
 		]));
+var author$project$Route$NotFound = {$: 'NotFound'};
 var elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
 		if (maybe.$ === 'Just') {
@@ -5364,7 +5343,7 @@ var elm$url$Url$Parser$parse = F2(
 var author$project$Main$toRoute = function (url) {
 	return A2(
 		elm$core$Maybe$withDefault,
-		author$project$Main$NotFound,
+		author$project$Route$NotFound,
 		A2(elm$url$Url$Parser$parse, author$project$Main$routeParser, url));
 };
 var elm$core$Basics$False = {$: 'False'};
@@ -6026,61 +6005,122 @@ var elm$url$Url$toString = function (url) {
 };
 var author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'LinkClicked') {
-			var urlRequest = msg.a;
-			if (urlRequest.$ === 'Internal') {
-				var url = urlRequest.a;
-				var newTitle = author$project$Main$routeToTitle(
-					author$project$Main$toRoute(url));
+		switch (msg.$) {
+			case 'LinkClicked':
+				var urlRequest = msg.a;
+				if (urlRequest.$ === 'Internal') {
+					var url = urlRequest.a;
+					var newTitle = author$project$Main$routeToTitle(
+						author$project$Main$toRoute(url));
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								route: author$project$Main$toRoute(url),
+								title: newTitle
+							}),
+						A2(
+							elm$browser$Browser$Navigation$pushUrl,
+							model.key,
+							elm$url$Url$toString(url)));
+				} else {
+					var href = urlRequest.a;
+					return _Utils_Tuple2(
+						model,
+						elm$browser$Browser$Navigation$load(href));
+				}
+			case 'UrlChanged':
+				var url = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							route: author$project$Main$toRoute(url),
-							title: newTitle
-						}),
-					A2(
-						elm$browser$Browser$Navigation$pushUrl,
-						model.key,
-						elm$url$Url$toString(url)));
-			} else {
-				var href = urlRequest.a;
-				return _Utils_Tuple2(
-					model,
-					elm$browser$Browser$Navigation$load(href));
-			}
-		} else {
-			var url = msg.a;
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{url: url}),
-				elm$core$Platform$Cmd$none);
+						{url: url}),
+					elm$core$Platform$Cmd$none);
+			default:
+				var homeMsg = msg.a;
+				if (homeMsg.$ === 'Increment') {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{title: model.title + 'Inc'}),
+						elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{title: model.title + 'Dec'}),
+						elm$core$Platform$Cmd$none);
+				}
 		}
 	});
-var author$project$Main$changeModelType = function (model) {
-	return {title: model.title};
+var author$project$Main$HomeMsg = function (a) {
+	return {$: 'HomeMsg', a: a};
 };
+var author$project$Page$Home$Decrement = {$: 'Decrement'};
+var author$project$Page$Home$Increment = {$: 'Increment'};
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$p = _VirtualDom_node('p');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var author$project$Page$Home$view = function (model) {
-	return _List_fromArray(
-		[
-			A2(
-			elm$html$Html$p,
-			_List_Nil,
-			_List_fromArray(
-				[
-					elm$html$Html$text(model.title + '内容')
-				]))
-		]);
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text(model.title + '内容')
+					])),
+				A2(
+				elm$html$Html$button,
+				_List_fromArray(
+					[
+						elm$html$Html$Events$onClick(author$project$Page$Home$Decrement)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('-')
+					])),
+				A2(
+				elm$html$Html$button,
+				_List_fromArray(
+					[
+						elm$html$Html$Events$onClick(author$project$Page$Home$Increment)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('+')
+					]))
+			]));
 };
 var elm$html$Html$a = _VirtualDom_node('a');
-var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$h2 = _VirtualDom_node('h2');
 var elm$html$Html$li = _VirtualDom_node('li');
+var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var elm$html$Html$nav = _VirtualDom_node('nav');
 var elm$html$Html$section = _VirtualDom_node('section');
 var elm$html$Html$ul = _VirtualDom_node('ul');
@@ -6140,54 +6180,6 @@ var author$project$Main$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page1')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ1')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page2')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ2')
-													]))
-											])),
-										A2(
-										elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$a,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$href('/page3')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('ページ3')
-													]))
-											])),
 										A2(
 										elm$html$Html$li,
 										_List_Nil,
@@ -6277,9 +6269,14 @@ var author$project$Main$view = function (model) {
 														]))
 												]);
 										case 'Home':
-											return author$project$Page$Home$view(
-												author$project$Main$changeModelType(model));
-										case 'User':
+											return _List_fromArray(
+												[
+													A2(
+													elm$html$Html$map,
+													author$project$Main$HomeMsg,
+													author$project$Page$Home$view(model))
+												]);
+										default:
 											var string = _n0.a;
 											return _List_fromArray(
 												[
@@ -6289,17 +6286,6 @@ var author$project$Main$view = function (model) {
 													_List_fromArray(
 														[
 															elm$html$Html$text('ワイについて書く')
-														]))
-												]);
-										default:
-											return _List_fromArray(
-												[
-													A2(
-													elm$html$Html$p,
-													_List_Nil,
-													_List_fromArray(
-														[
-															elm$html$Html$text('内容')
 														]))
 												]);
 									}

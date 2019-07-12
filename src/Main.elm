@@ -5,6 +5,7 @@ import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Page.Home as Home
+import Route exposing (Route)
 import Url
 import Url.Parser exposing ((</>), Parser, int, map, oneOf, s, string, top)
 
@@ -49,50 +50,29 @@ init flags url key =
     ( Model key url title route, Cmd.none )
 
 
-type Route
-    = Home
-    | Page1
-    | Page2
-    | Page3
-    | User String
-    | NotFound
-
-
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
-        [ map Home top
-        , map Page1 (s "page1")
-        , map Page2 (s "page2")
-        , map Page3 (s "page3")
-        , map User (s "user" </> string)
+        [ map Route.Home top
+        , map Route.User (s "user" </> string)
         ]
 
 
 toRoute : Url.Url -> Route
 toRoute url =
-    Maybe.withDefault NotFound (Url.Parser.parse routeParser url)
+    Maybe.withDefault Route.NotFound (Url.Parser.parse routeParser url)
 
 
 routeToTitle : Route -> String
 routeToTitle route =
     case route of
-        Home ->
+        Route.Home ->
             "トップページ"
 
-        Page1 ->
-            "ページ1"
-
-        Page2 ->
-            "ページ2"
-
-        Page3 ->
-            "ページ3"
-
-        User string ->
+        Route.User string ->
             string ++ "のページ"
 
-        NotFound ->
+        Route.NotFound ->
             "Not Found"
 
 
@@ -103,6 +83,7 @@ routeToTitle route =
 type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | HomeMsg Home.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -124,6 +105,18 @@ update msg model =
             ( { model | url = url }
             , Cmd.none
             )
+
+        HomeMsg homeMsg ->
+            case homeMsg of
+                Home.Increment ->
+                    ( { model | title = model.title ++ "Inc" }
+                    , Cmd.none
+                    )
+
+                Home.Decrement ->
+                    ( { model | title = model.title ++ "Dec" }
+                    , Cmd.none
+                    )
 
 
 
@@ -149,10 +142,7 @@ view model =
                 ]
             , nav []
                 [ ul [ class "gNav" ]
-                    [ li [] [ a [ href "/page1" ] [ text "ページ1" ] ]
-                    , li [] [ a [ href "/page2" ] [ text "ページ2" ] ]
-                    , li [] [ a [ href "/page3" ] [ text "ページ3" ] ]
-                    , li [] [ a [ href "/user/yametaro" ] [ text "やめ太郎について" ] ]
+                    [ li [] [ a [ href "/user/yametaro" ] [ text "やめ太郎について" ] ]
                     , li [] [ a [ href "/notfound" ] [ text "無いページ" ] ]
                     ]
                 ]
@@ -160,7 +150,7 @@ view model =
                 [ h2 [] [ text model.title ]
                 , div [ class "body" ]
                     (case model.route of
-                        NotFound ->
+                        Route.NotFound ->
                             [ div []
                                 [ p []
                                     [ text "このページは存在しません"
@@ -171,27 +161,13 @@ view model =
                                 ]
                             ]
 
-                        Home ->
-                            Home.view (changeModelType model)
+                        Route.Home ->
+                            [ Home.view model |> Html.map HomeMsg ]
 
-                        User string ->
+                        Route.User string ->
                             [ p [] [ text "ワイについて書く" ] ]
-
-                        _ ->
-                            [ p [] [ text "内容" ] ]
                     )
                 ]
             ]
         ]
-    }
-
-
-type alias ModelForView =
-    { title : String
-    }
-
-
-changeModelType : Model -> ModelForView
-changeModelType model =
-    { title = model.title
     }

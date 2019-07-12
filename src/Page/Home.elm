@@ -1,15 +1,31 @@
-module Page.Home exposing (view)
+module Page.Home exposing (Model, Msg(..), view)
 
+import Browser
+import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
+import Route exposing (Route)
+import Url
 
 
-type alias ModelForView =
-    { title : String
+type alias Model =
+    { key : Nav.Key
+    , url : Url.Url
+    , title : String
+    , route : Route
     }
 
 
-view : ModelForView -> List (Html msg)
+type Msg
+    = Increment
+    | Decrement
+
+
+view : Model -> Html Msg
 view model =
-    [ p [] [ text (model.title ++ "内容") ]
-    ]
+    div []
+        [ p [] [ text (model.title ++ "内容") ]
+        , button [ onClick Decrement ] [ text "-" ]
+        , button [ onClick Increment ] [ text "+" ]
+        ]
