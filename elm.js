@@ -5010,37 +5010,41 @@ var author$project$Main$subscriptions = function (_n0) {
 var author$project$Main$TopMsg = function (a) {
 	return {$: 'TopMsg', a: a};
 };
+var author$project$Main$UserMsg = function (a) {
+	return {$: 'UserMsg', a: a};
+};
+var author$project$Main$UserPage = function (a) {
+	return {$: 'UserPage', a: a};
+};
 var author$project$Main$UsersMsg = function (a) {
 	return {$: 'UsersMsg', a: a};
 };
 var author$project$Main$UsersPage = function (a) {
 	return {$: 'UsersPage', a: a};
 };
-var author$project$Main$NotFound = {$: 'NotFound'};
-var author$project$Page$Users$Loading = {$: 'Loading'};
-var author$project$Page$Users$GotData = function (a) {
-	return {$: 'GotData', a: a};
+var author$project$Main$NotFound = function (a) {
+	return {$: 'NotFound', a: a};
 };
-var author$project$Page$Users$User = F6(
-	function (id, name, avatar, age, height, width) {
-		return {age: age, avatar: avatar, height: height, id: id, name: name, width: width};
+var author$project$Api$GotUser = function (a) {
+	return {$: 'GotUser', a: a};
+};
+var author$project$Api$User = F6(
+	function (id, name, avatar, age, height, weight) {
+		return {age: age, avatar: avatar, height: height, id: id, name: name, weight: weight};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$map6 = _Json_map6;
 var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Page$Users$usersDecorder = A7(
+var author$project$Api$userDecorder = A7(
 	elm$json$Json$Decode$map6,
-	author$project$Page$Users$User,
-	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$int),
+	author$project$Api$User,
+	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'avatar', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'age', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'height', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'weight', elm$json$Json$Decode$int));
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -5057,6 +5061,9 @@ var elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
 var elm$core$Basics$compare = _Utils_compare;
@@ -5919,12 +5926,33 @@ var elm$http$Http$get = function (r) {
 	return elm$http$Http$request(
 		{body: elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: elm$core$Maybe$Nothing, tracker: elm$core$Maybe$Nothing, url: r.url});
 };
-var author$project$Page$Users$getUsers = elm$http$Http$get(
+var author$project$Api$getUser = function (userId) {
+	return elm$http$Http$get(
+		{
+			expect: A2(elm$http$Http$expectJson, author$project$Api$GotUser, author$project$Api$userDecorder),
+			url: 'https://5d118a66bebb9800143d21f8.mockapi.io/users/' + userId
+		});
+};
+var author$project$Page$User$Loading = {$: 'Loading'};
+var author$project$Page$User$init = function (userId) {
+	return _Utils_Tuple2(
+		{state: author$project$Page$User$Loading, title: 'ユーザー: ' + (userId + 'のページ')},
+		author$project$Api$getUser(userId));
+};
+var author$project$Api$GotUsers = function (a) {
+	return {$: 'GotUsers', a: a};
+};
+var elm$json$Json$Decode$list = _Json_decodeList;
+var author$project$Api$usersDecorder = elm$json$Json$Decode$list(author$project$Api$userDecorder);
+var author$project$Api$getUsers = elm$http$Http$get(
 	{
-		expect: A2(elm$http$Http$expectJson, author$project$Page$Users$GotData, author$project$Page$Users$usersDecorder),
+		expect: A2(elm$http$Http$expectJson, author$project$Api$GotUsers, author$project$Api$usersDecorder),
 		url: 'https://5d118a66bebb9800143d21f8.mockapi.io/users'
 	});
-var author$project$Page$Users$init = _Utils_Tuple2(author$project$Page$Users$Loading, author$project$Page$Users$getUsers);
+var author$project$Page$Users$Loading = {$: 'Loading'};
+var author$project$Page$Users$init = _Utils_Tuple2(
+	{state: author$project$Page$Users$Loading, title: 'ユーザー 一覧'},
+	author$project$Api$getUsers);
 var elm$core$Platform$Cmd$map = _Platform_map;
 var author$project$Main$goTo = F2(
 	function (maybeRoute, model) {
@@ -5932,30 +5960,46 @@ var author$project$Main$goTo = F2(
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{page: author$project$Main$NotFound}),
+					{
+						page: author$project$Main$NotFound(
+							{title: 'Not Found'})
+					}),
 				elm$core$Platform$Cmd$none);
 		} else {
-			if (maybeRoute.a.$ === 'Top') {
-				var _n1 = maybeRoute.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							page: author$project$Main$TopPage(author$project$Page$Top$init)
-						}),
-					elm$core$Platform$Cmd$none);
-			} else {
-				var _n2 = maybeRoute.a;
-				var _n3 = author$project$Page$Users$init;
-				var usersModel = _n3.a;
-				var usersCmd = _n3.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							page: author$project$Main$UsersPage(usersModel)
-						}),
-					A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+			switch (maybeRoute.a.$) {
+				case 'Top':
+					var _n1 = maybeRoute.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: author$project$Main$TopPage(author$project$Page$Top$init)
+							}),
+						elm$core$Platform$Cmd$none);
+				case 'Users':
+					var _n2 = maybeRoute.a;
+					var _n3 = author$project$Page$Users$init;
+					var usersModel = _n3.a;
+					var usersCmd = _n3.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: author$project$Main$UsersPage(usersModel)
+							}),
+						A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+				default:
+					var userId = maybeRoute.a.a;
+					var _n4 = author$project$Page$User$init(userId);
+					var userModel = _n4.a;
+					var userCmd = _n4.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: author$project$Main$UserPage(userModel)
+							}),
+						A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
 			}
 		}
 	});
@@ -5975,23 +6019,69 @@ var author$project$Page$Top$update = F2(
 				elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Page$User$Failure = {$: 'Failure'};
+var author$project$Page$User$Success = function (a) {
+	return {$: 'Success', a: a};
+};
+var elm$core$Debug$log = _Debug_log;
+var author$project$Page$User$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'GotUser') {
+			var result = msg.a;
+			if (result.$ === 'Ok') {
+				var user = result.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							state: author$project$Page$User$Success(user)
+						}),
+					elm$core$Platform$Cmd$none);
+			} else {
+				var _n2 = A2(elm$core$Debug$log, 'Err: ', msg);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: author$project$Page$User$Failure}),
+					elm$core$Platform$Cmd$none);
+			}
+		} else {
+			return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		}
+	});
 var author$project$Page$Users$Failure = {$: 'Failure'};
 var author$project$Page$Users$Success = function (a) {
 	return {$: 'Success', a: a};
 };
 var author$project$Page$Users$update = F2(
 	function (msg, model) {
-		var result = msg.a;
-		if (result.$ === 'Ok') {
-			var url = result.a;
-			return _Utils_Tuple2(
-				author$project$Page$Users$Success(url),
-				elm$core$Platform$Cmd$none);
+		if (msg.$ === 'GotUsers') {
+			var result = msg.a;
+			if (result.$ === 'Ok') {
+				var users = result.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							state: author$project$Page$Users$Success(users)
+						}),
+					elm$core$Platform$Cmd$none);
+			} else {
+				var _n2 = A2(elm$core$Debug$log, 'Err: ', msg);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: author$project$Page$Users$Failure}),
+					elm$core$Platform$Cmd$none);
+			}
 		} else {
-			return _Utils_Tuple2(author$project$Page$Users$Failure, elm$core$Platform$Cmd$none);
+			return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 		}
 	});
 var author$project$Route$Top = {$: 'Top'};
+var author$project$Route$User = function (a) {
+	return {$: 'User', a: a};
+};
 var author$project$Route$Users = {$: 'Users'};
 var elm$core$List$map = F2(
 	function (f, xs) {
@@ -6100,6 +6190,52 @@ var elm$url$Url$Parser$s = function (str) {
 			}
 		});
 };
+var elm$url$Url$Parser$slash = F2(
+	function (_n0, _n1) {
+		var parseBefore = _n0.a;
+		var parseAfter = _n1.a;
+		return elm$url$Url$Parser$Parser(
+			function (state) {
+				return A2(
+					elm$core$List$concatMap,
+					parseAfter,
+					parseBefore(state));
+			});
+	});
+var elm$url$Url$Parser$custom = F2(
+	function (tipe, stringToSomething) {
+		return elm$url$Url$Parser$Parser(
+			function (_n0) {
+				var visited = _n0.visited;
+				var unvisited = _n0.unvisited;
+				var params = _n0.params;
+				var frag = _n0.frag;
+				var value = _n0.value;
+				if (!unvisited.b) {
+					return _List_Nil;
+				} else {
+					var next = unvisited.a;
+					var rest = unvisited.b;
+					var _n2 = stringToSomething(next);
+					if (_n2.$ === 'Just') {
+						var nextValue = _n2.a;
+						return _List_fromArray(
+							[
+								A5(
+								elm$url$Url$Parser$State,
+								A2(elm$core$List$cons, next, visited),
+								rest,
+								params,
+								frag,
+								value(nextValue))
+							]);
+					} else {
+						return _List_Nil;
+					}
+				}
+			});
+	});
+var elm$url$Url$Parser$string = A2(elm$url$Url$Parser$custom, 'STRING', elm$core$Maybe$Just);
 var elm$url$Url$Parser$top = elm$url$Url$Parser$Parser(
 	function (state) {
 		return _List_fromArray(
@@ -6112,7 +6248,14 @@ var author$project$Route$parser = elm$url$Url$Parser$oneOf(
 			A2(
 			elm$url$Url$Parser$map,
 			author$project$Route$Users,
-			elm$url$Url$Parser$s('user'))
+			elm$url$Url$Parser$s('user')),
+			A2(
+			elm$url$Url$Parser$map,
+			author$project$Route$User,
+			A2(
+				elm$url$Url$Parser$slash,
+				elm$url$Url$Parser$s('user'),
+				elm$url$Url$Parser$string))
 		]));
 var elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
@@ -6537,7 +6680,7 @@ var author$project$Main$update = F2(
 				} else {
 					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'UsersMsg':
 				var usersMsg = msg.a;
 				var _n4 = model.page;
 				if (_n4.$ === 'UsersPage') {
@@ -6552,6 +6695,24 @@ var author$project$Main$update = F2(
 								page: author$project$Main$UsersPage(newUsersModel)
 							}),
 						A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+				} else {
+					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+				}
+			default:
+				var userMsg = msg.a;
+				var _n6 = model.page;
+				if (_n6.$ === 'UserPage') {
+					var userModel = _n6.a;
+					var _n7 = A2(author$project$Page$User$update, userMsg, userModel);
+					var newUserModel = _n7.a;
+					var userCmd = _n7.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								page: author$project$Main$UserPage(newUserModel)
+							}),
+						A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
 				} else {
 					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 				}
@@ -6673,8 +6834,9 @@ var elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var author$project$Page$Users$viewGif = function (model) {
-	switch (model.$) {
+var author$project$Page$User$viewGif = function (model) {
+	var _n0 = model.state;
+	switch (_n0.$) {
 		case 'Failure':
 			return A2(
 				elm$html$Html$div,
@@ -6686,74 +6848,147 @@ var author$project$Page$Users$viewGif = function (model) {
 		case 'Loading':
 			return elm$html$Html$text('Loading...');
 		default:
-			var user = model.a;
+			var user = _n0.a;
 			return A2(
-				elm$html$Html$div,
+				elm$html$Html$ul,
 				_List_Nil,
 				_List_fromArray(
 					[
 						A2(
-						elm$html$Html$ul,
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('ID: ' + user.id)
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('名前: ' + user.name)
+							])),
+						A2(
+						elm$html$Html$li,
 						_List_Nil,
 						_List_fromArray(
 							[
 								A2(
-								elm$html$Html$li,
-								_List_Nil,
+								elm$html$Html$img,
 								_List_fromArray(
 									[
-										elm$html$Html$text(
-										'ID: ' + elm$core$String$fromInt(user.id))
-									])),
-								A2(
-								elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('名前: ' + user.name)
-									])),
-								A2(
-								elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$img,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$src(user.avatar)
-											]),
-										_List_Nil)
-									])),
-								A2(
-								elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'年齢: ' + elm$core$String$fromInt(user.age))
-									])),
-								A2(
-								elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'身長: ' + elm$core$String$fromInt(user.height))
-									])),
-								A2(
-								elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										'体重: ' + elm$core$String$fromInt(user.width))
-									]))
+										elm$html$Html$Attributes$src(user.avatar)
+									]),
+								_List_Nil)
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								'年齢: ' + elm$core$String$fromInt(user.age))
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								'身長: ' + elm$core$String$fromInt(user.height))
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								'体重: ' + elm$core$String$fromInt(user.weight))
 							]))
 					]));
 	}
 };
 var elm$html$Html$h2 = _VirtualDom_node('h2');
+var author$project$Page$User$view = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$h2,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Random Cats')
+					])),
+				author$project$Page$User$viewGif(model)
+			]));
+};
+var author$project$Page$Users$viewUser = function (user) {
+	return A2(
+		elm$html$Html$li,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$ul,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$a,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$href('/user/' + user.id)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('名前: ' + user.name)
+									]))
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$img,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$src(user.avatar)
+									]),
+								_List_Nil)
+							]))
+					]))
+			]));
+};
+var author$project$Page$Users$viewGif = function (model) {
+	var _n0 = model.state;
+	switch (_n0.$) {
+		case 'Failure':
+			return A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('データが取得できませんでした。')
+					]));
+		case 'Loading':
+			return elm$html$Html$text('Loading...');
+		default:
+			var users = _n0.a;
+			return A2(
+				elm$html$Html$ul,
+				_List_Nil,
+				A2(elm$core$List$map, author$project$Page$Users$viewUser, users));
+	}
+};
 var author$project$Page$Users$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -6786,7 +7021,7 @@ var author$project$Main$content = function (model) {
 					author$project$Main$TopMsg,
 					author$project$Page$Top$view(topPageModel))
 				]);
-		default:
+		case 'UsersPage':
 			var usersPageModel = _n0.a;
 			return _List_fromArray(
 				[
@@ -6795,18 +7030,31 @@ var author$project$Main$content = function (model) {
 					author$project$Main$UsersMsg,
 					author$project$Page$Users$view(usersPageModel))
 				]);
+		default:
+			var userPageModel = _n0.a;
+			return _List_fromArray(
+				[
+					A2(
+					elm$html$Html$map,
+					author$project$Main$UserMsg,
+					author$project$Page$User$view(userPageModel))
+				]);
 	}
 };
 var author$project$Main$getTitle = function (page) {
 	switch (page.$) {
 		case 'NotFound':
-			return 'Not Found';
+			var model = page.a;
+			return model.title;
 		case 'TopPage':
+			var model = page.a;
+			return model.title;
+		case 'UsersPage':
 			var model = page.a;
 			return model.title;
 		default:
 			var model = page.a;
-			return 'ユーザー 一覧';
+			return model.title;
 	}
 };
 var elm$html$Html$h1 = _VirtualDom_node('h1');

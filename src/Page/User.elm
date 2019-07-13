@@ -1,4 +1,4 @@
-module Page.Users exposing (Model, Msg, init, update, view)
+module Page.User exposing (Model, Msg, init, update, view)
 
 import Api
 import Html exposing (..)
@@ -15,15 +15,15 @@ type alias Model =
 type State
     = Failure
     | Loading
-    | Success (List Api.User)
+    | Success Api.User
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { title = "ユーザー 一覧"
+init : Api.UserId -> ( Model, Cmd Msg )
+init userId =
+    ( { title = "ユーザー: " ++ userId ++ "のページ"
       , state = Loading
       }
-    , Api.getUsers
+    , Api.getUser userId
     )
 
 
@@ -38,10 +38,10 @@ type alias Msg =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Api.GotUsers result ->
+        Api.GotUser result ->
             case result of
-                Ok users ->
-                    ( { model | state = Success users }, Cmd.none )
+                Ok user ->
+                    ( { model | state = Success user }, Cmd.none )
 
                 Err _ ->
                     let
@@ -86,15 +86,12 @@ viewGif model =
         Loading ->
             text "Loading..."
 
-        Success users ->
-            ul [] (List.map viewUser users)
-
-
-viewUser : Api.User -> Html Msg
-viewUser user =
-    li []
-        [ ul []
-            [ li [] [ a [ href <| "/user/" ++ user.id ] [ text <| "名前: " ++ user.name ] ]
-            , li [] [ img [ src user.avatar ] [] ]
-            ]
-        ]
+        Success user ->
+            ul []
+                [ li [] [ text <| "ID: " ++ user.id ]
+                , li [] [ text <| "名前: " ++ user.name ]
+                , li [] [ img [ src user.avatar ] [] ]
+                , li [] [ text <| "年齢: " ++ String.fromInt user.age ]
+                , li [] [ text <| "身長: " ++ String.fromInt user.height ]
+                , li [] [ text <| "体重: " ++ String.fromInt user.weight ]
+                ]

@@ -5,6 +5,7 @@ import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Page.Top
+import Page.User
 import Page.Users
 import Route exposing (Route)
 import Url
@@ -38,9 +39,10 @@ type alias Model =
 
 
 type Page
-    = NotFound
+    = NotFound { title : String }
     | TopPage Page.Top.Model
     | UsersPage Page.Users.Model
+    | UserPage Page.User.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -57,6 +59,7 @@ type Msg
     | UrlChanged Url.Url
     | TopMsg Page.Top.Msg
     | UsersMsg Page.Users.Msg
+    | UserMsg Page.User.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -101,12 +104,26 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        UserMsg userMsg ->
+            case model.page of
+                UserPage userModel ->
+                    let
+                        ( newUserModel, userCmd ) =
+                            Page.User.update userMsg userModel
+                    in
+                    ( { model | page = UserPage newUserModel }
+                    , Cmd.map UserMsg userCmd
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 goTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 goTo maybeRoute model =
     case maybeRoute of
         Nothing ->
-            ( { model | page = NotFound }, Cmd.none )
+            ( { model | page = NotFound { title = "Not Found" } }, Cmd.none )
 
         Just Route.Top ->
             ( { model | page = TopPage Page.Top.init }
@@ -120,6 +137,15 @@ goTo maybeRoute model =
             in
             ( { model | page = UsersPage usersModel }
             , Cmd.map UsersMsg usersCmd
+            )
+
+        Just (Route.User userId) ->
+            let
+                ( userModel, userCmd ) =
+                    Page.User.init userId
+            in
+            ( { model | page = UserPage userModel }
+            , Cmd.map UserMsg userCmd
             )
 
 
@@ -168,20 +194,23 @@ view model =
 getTitle : Page -> String
 getTitle page =
     case page of
-        NotFound ->
-            "Not Found"
+        NotFound model ->
+            model.title
 
         TopPage model ->
             model.title
 
         UsersPage model ->
-            "ユーザー 一覧"
+            model.title
+
+        UserPage model ->
+            model.title
 
 
 content : Model -> List (Html Msg)
 content model =
     case model.page of
-        NotFound ->
+        NotFound _ ->
             viewNotFound
 
         TopPage topPageModel ->
@@ -189,6 +218,9 @@ content model =
 
         UsersPage usersPageModel ->
             [ Page.Users.view usersPageModel |> Html.map UsersMsg ]
+
+        UserPage userPageModel ->
+            [ Page.User.view userPageModel |> Html.map UserMsg ]
 
 
 viewNotFound : List (Html Msg)

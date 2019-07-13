@@ -4,13 +4,14 @@ import Url
 import Url.Parser exposing ((</>), Parser, int, map, oneOf, s, string, top)
 
 
-type alias Id =
-    Int
+type alias UserId =
+    String
 
 
 type Route
     = Top
     | Users
+    | User UserId
 
 
 
@@ -22,8 +23,7 @@ parser =
     oneOf
         [ map Top top
         , map Users (s "user")
-
-        --, map User (s "user" </> int)
+        , map User (s "user" </> string)
         ]
 
 
