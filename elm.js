@@ -5025,6 +5025,19 @@ var author$project$Main$UsersPage = function (a) {
 var author$project$Main$NotFound = function (a) {
 	return {$: 'NotFound', a: a};
 };
+var elm$core$Platform$Cmd$map = _Platform_map;
+var author$project$Main$makeModelAndCmdTuple = F4(
+	function (_n0, msgType, pageType, model) {
+		var pageModel = _n0.a;
+		var pageCmd = _n0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{
+					page: pageType(pageModel)
+				}),
+			A2(elm$core$Platform$Cmd$map, msgType, pageCmd));
+	});
 var author$project$Api$GotUser = function (a) {
 	return {$: 'GotUser', a: a};
 };
@@ -5953,7 +5966,6 @@ var author$project$Page$Users$Loading = {$: 'Loading'};
 var author$project$Page$Users$init = _Utils_Tuple2(
 	{state: author$project$Page$Users$Loading, title: 'ユーザー 一覧'},
 	author$project$Api$getUsers);
-var elm$core$Platform$Cmd$map = _Platform_map;
 var author$project$Main$goTo = F2(
 	function (maybeRoute, model) {
 		if (maybeRoute.$ === 'Nothing') {
@@ -5978,44 +5990,17 @@ var author$project$Main$goTo = F2(
 						elm$core$Platform$Cmd$none);
 				case 'Users':
 					var _n2 = maybeRoute.a;
-					var _n3 = author$project$Page$Users$init;
-					var usersModel = _n3.a;
-					var usersCmd = _n3.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: author$project$Main$UsersPage(usersModel)
-							}),
-						A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+					return A4(author$project$Main$makeModelAndCmdTuple, author$project$Page$Users$init, author$project$Main$UsersMsg, author$project$Main$UsersPage, model);
 				default:
 					var userId = maybeRoute.a.a;
-					var _n4 = author$project$Page$User$init(userId);
-					var userModel = _n4.a;
-					var userCmd = _n4.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: author$project$Main$UserPage(userModel)
-							}),
-						A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
+					return A4(
+						author$project$Main$makeModelAndCmdTuple,
+						author$project$Page$User$init(userId),
+						author$project$Main$UserMsg,
+						author$project$Main$UserPage,
+						model);
 			}
 		}
-	});
-var elm$core$Tuple$second = function (_n0) {
-	var y = _n0.b;
-	return y;
-};
-var author$project$Main$makeNewPageModelAndPageCmd = F4(
-	function (newPageModelAndPageCmd, msgType, pageType, model) {
-		return _Utils_Tuple2(
-			_Utils_update(
-				model,
-				{
-					page: pageType(newPageModelAndPageCmd.a)
-				}),
-			A2(elm$core$Platform$Cmd$map, msgType, newPageModelAndPageCmd.b));
 	});
 var author$project$Page$Top$update = F2(
 	function (msg, model) {
@@ -6686,7 +6671,7 @@ var author$project$Main$update = F2(
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
 								return A4(
-									author$project$Main$makeNewPageModelAndPageCmd,
+									author$project$Main$makeModelAndCmdTuple,
 									A2(author$project$Page$Top$update, pageMsg, pageModel),
 									author$project$Main$TopMsg,
 									author$project$Main$TopPage,
@@ -6699,7 +6684,7 @@ var author$project$Main$update = F2(
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
 								return A4(
-									author$project$Main$makeNewPageModelAndPageCmd,
+									author$project$Main$makeModelAndCmdTuple,
 									A2(author$project$Page$Users$update, pageMsg, pageModel),
 									author$project$Main$UsersMsg,
 									author$project$Main$UsersPage,
@@ -6712,7 +6697,7 @@ var author$project$Main$update = F2(
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
 								return A4(
-									author$project$Main$makeNewPageModelAndPageCmd,
+									author$project$Main$makeModelAndCmdTuple,
 									A2(author$project$Page$User$update, pageMsg, pageModel),
 									author$project$Main$UserMsg,
 									author$project$Main$UserPage,

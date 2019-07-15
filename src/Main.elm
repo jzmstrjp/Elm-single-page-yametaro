@@ -62,10 +62,15 @@ type Msg
     | UserMsg Page.User.Msg
 
 
-makeNewPageModelAndPageCmd : ( newPageModel, Cmd newPageMsg ) -> (newPageMsg -> Msg) -> (newPageModel -> Page) -> Model -> ( Model, Cmd Msg )
-makeNewPageModelAndPageCmd newPageModelAndPageCmd msgType pageType model =
-    ( { model | page = pageType <| Tuple.first newPageModelAndPageCmd }
-    , Cmd.map msgType <| Tuple.second newPageModelAndPageCmd
+makeModelAndCmdTuple :
+    ( pageModel, Cmd pageMsg )
+    -> (pageMsg -> Msg)
+    -> (pageModel -> Page)
+    -> Model
+    -> ( Model, Cmd Msg )
+makeModelAndCmdTuple ( pageModel, pageCmd ) msgType pageType model =
+    ( { model | page = pageType pageModel }
+    , Cmd.map msgType pageCmd
     )
 
 
@@ -86,13 +91,13 @@ update msg model =
         _ ->
             case ( msg, model.page ) of
                 ( TopMsg pageMsg, TopPage pageModel ) ->
-                    makeNewPageModelAndPageCmd (Page.Top.update pageMsg pageModel) TopMsg TopPage model
+                    makeModelAndCmdTuple (Page.Top.update pageMsg pageModel) TopMsg TopPage model
 
                 ( UsersMsg pageMsg, UsersPage pageModel ) ->
-                    makeNewPageModelAndPageCmd (Page.Users.update pageMsg pageModel) UsersMsg UsersPage model
+                    makeModelAndCmdTuple (Page.Users.update pageMsg pageModel) UsersMsg UsersPage model
 
                 ( UserMsg pageMsg, UserPage pageModel ) ->
-                    makeNewPageModelAndPageCmd (Page.User.update pageMsg pageModel) UserMsg UserPage model
+                    makeModelAndCmdTuple (Page.User.update pageMsg pageModel) UserMsg UserPage model
 
                 ( _, _ ) ->
                     ( model, Cmd.none )
@@ -110,22 +115,10 @@ goTo maybeRoute model =
             )
 
         Just Route.Users ->
-            let
-                ( usersModel, usersCmd ) =
-                    Page.Users.init
-            in
-            ( { model | page = UsersPage usersModel }
-            , Cmd.map UsersMsg usersCmd
-            )
+            makeModelAndCmdTuple Page.Users.init UsersMsg UsersPage model
 
         Just (Route.User userId) ->
-            let
-                ( userModel, userCmd ) =
-                    Page.User.init userId
-            in
-            ( { model | page = UserPage userModel }
-            , Cmd.map UserMsg userCmd
-            )
+            makeModelAndCmdTuple (Page.User.init userId) UserMsg UserPage model
 
 
 
