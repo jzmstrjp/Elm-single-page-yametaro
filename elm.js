@@ -6003,6 +6003,20 @@ var author$project$Main$goTo = F2(
 			}
 		}
 	});
+var elm$core$Tuple$second = function (_n0) {
+	var y = _n0.b;
+	return y;
+};
+var author$project$Main$makeNewPageModelAndPageCmd = F4(
+	function (newPageModelAndPageCmd, msgType, pageType, model) {
+		return _Utils_Tuple2(
+			_Utils_update(
+				model,
+				{
+					page: pageType(newPageModelAndPageCmd.a)
+				}),
+			A2(elm$core$Platform$Cmd$map, msgType, newPageModelAndPageCmd.b));
+	});
 var author$project$Page$Top$update = F2(
 	function (msg, model) {
 		if (msg.$ === 'Increment') {
@@ -6671,16 +6685,12 @@ var author$project$Main$update = F2(
 							if (_n2.b.$ === 'TopPage') {
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
-								var _n3 = A2(author$project$Page$Top$update, pageMsg, pageModel);
-								var newPageModel = _n3.a;
-								var pageCmd = _n3.b;
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											page: author$project$Main$TopPage(newPageModel)
-										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$TopMsg, pageCmd));
+								return A4(
+									author$project$Main$makeNewPageModelAndPageCmd,
+									A2(author$project$Page$Top$update, pageMsg, pageModel),
+									author$project$Main$TopMsg,
+									author$project$Main$TopPage,
+									model);
 							} else {
 								break _n2$3;
 							}
@@ -6688,16 +6698,12 @@ var author$project$Main$update = F2(
 							if (_n2.b.$ === 'UsersPage') {
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
-								var _n4 = A2(author$project$Page$Users$update, pageMsg, pageModel);
-								var newPageModel = _n4.a;
-								var pageCmd = _n4.b;
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											page: author$project$Main$UsersPage(newPageModel)
-										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, pageCmd));
+								return A4(
+									author$project$Main$makeNewPageModelAndPageCmd,
+									A2(author$project$Page$Users$update, pageMsg, pageModel),
+									author$project$Main$UsersMsg,
+									author$project$Main$UsersPage,
+									model);
 							} else {
 								break _n2$3;
 							}
@@ -6705,16 +6711,12 @@ var author$project$Main$update = F2(
 							if (_n2.b.$ === 'UserPage') {
 								var pageMsg = _n2.a.a;
 								var pageModel = _n2.b.a;
-								var _n5 = A2(author$project$Page$User$update, pageMsg, pageModel);
-								var newPageModel = _n5.a;
-								var pageCmd = _n5.b;
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											page: author$project$Main$UserPage(newPageModel)
-										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, pageCmd));
+								return A4(
+									author$project$Main$makeNewPageModelAndPageCmd,
+									A2(author$project$Page$User$update, pageMsg, pageModel),
+									author$project$Main$UserMsg,
+									author$project$Main$UserPage,
+									model);
 							} else {
 								break _n2$3;
 							}

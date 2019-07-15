@@ -62,8 +62,11 @@ type Msg
     | UserMsg Page.User.Msg
 
 
-
---func1 msg
+makeNewPageModelAndPageCmd : ( newPageModel, Cmd newPageMsg ) -> (newPageMsg -> Msg) -> (newPageModel -> Page) -> Model -> ( Model, Cmd Msg )
+makeNewPageModelAndPageCmd newPageModelAndPageCmd msgType pageType model =
+    ( { model | page = pageType <| Tuple.first newPageModelAndPageCmd }
+    , Cmd.map msgType <| Tuple.second newPageModelAndPageCmd
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,31 +86,13 @@ update msg model =
         _ ->
             case ( msg, model.page ) of
                 ( TopMsg pageMsg, TopPage pageModel ) ->
-                    let
-                        ( newPageModel, pageCmd ) =
-                            Page.Top.update pageMsg pageModel
-                    in
-                    ( { model | page = TopPage newPageModel }
-                    , Cmd.map TopMsg pageCmd
-                    )
+                    makeNewPageModelAndPageCmd (Page.Top.update pageMsg pageModel) TopMsg TopPage model
 
                 ( UsersMsg pageMsg, UsersPage pageModel ) ->
-                    let
-                        ( newPageModel, pageCmd ) =
-                            Page.Users.update pageMsg pageModel
-                    in
-                    ( { model | page = UsersPage newPageModel }
-                    , Cmd.map UsersMsg pageCmd
-                    )
+                    makeNewPageModelAndPageCmd (Page.Users.update pageMsg pageModel) UsersMsg UsersPage model
 
                 ( UserMsg pageMsg, UserPage pageModel ) ->
-                    let
-                        ( newPageModel, pageCmd ) =
-                            Page.User.update pageMsg pageModel
-                    in
-                    ( { model | page = UserPage newPageModel }
-                    , Cmd.map UserMsg pageCmd
-                    )
+                    makeNewPageModelAndPageCmd (Page.User.update pageMsg pageModel) UserMsg UserPage model
 
                 ( _, _ ) ->
                     ( model, Cmd.none )
