@@ -62,6 +62,10 @@ type Msg
     | UserMsg Page.User.Msg
 
 
+
+--func1 msg
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -78,31 +82,31 @@ update msg model =
 
         _ ->
             case ( msg, model.page ) of
-                ( TopMsg topMsg, TopPage topModel ) ->
+                ( TopMsg pageMsg, TopPage pageModel ) ->
                     let
-                        ( newTopModel, topCmd ) =
-                            Page.Top.update topMsg topModel
+                        ( newPageModel, pageCmd ) =
+                            Page.Top.update pageMsg pageModel
                     in
-                    ( { model | page = TopPage newTopModel }
-                    , Cmd.map TopMsg topCmd
+                    ( { model | page = TopPage newPageModel }
+                    , Cmd.map TopMsg pageCmd
                     )
 
-                ( UsersMsg usersMsg, UsersPage usersModel ) ->
+                ( UsersMsg pageMsg, UsersPage pageModel ) ->
                     let
-                        ( newUsersModel, usersCmd ) =
-                            Page.Users.update usersMsg usersModel
+                        ( newPageModel, pageCmd ) =
+                            Page.Users.update pageMsg pageModel
                     in
-                    ( { model | page = UsersPage newUsersModel }
-                    , Cmd.map UsersMsg usersCmd
+                    ( { model | page = UsersPage newPageModel }
+                    , Cmd.map UsersMsg pageCmd
                     )
 
-                ( UserMsg userMsg, UserPage userModel ) ->
+                ( UserMsg pageMsg, UserPage pageModel ) ->
                     let
-                        ( newUserModel, userCmd ) =
-                            Page.User.update userMsg userModel
+                        ( newPageModel, pageCmd ) =
+                            Page.User.update pageMsg pageModel
                     in
-                    ( { model | page = UserPage newUserModel }
-                    , Cmd.map UserMsg userCmd
+                    ( { model | page = UserPage newPageModel }
+                    , Cmd.map UserMsg pageCmd
                     )
 
                 ( _, _ ) ->

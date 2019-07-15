@@ -6669,52 +6669,52 @@ var author$project$Main$update = F2(
 					switch (_n2.a.$) {
 						case 'TopMsg':
 							if (_n2.b.$ === 'TopPage') {
-								var topMsg = _n2.a.a;
-								var topModel = _n2.b.a;
-								var _n3 = A2(author$project$Page$Top$update, topMsg, topModel);
-								var newTopModel = _n3.a;
-								var topCmd = _n3.b;
+								var pageMsg = _n2.a.a;
+								var pageModel = _n2.b.a;
+								var _n3 = A2(author$project$Page$Top$update, pageMsg, pageModel);
+								var newPageModel = _n3.a;
+								var pageCmd = _n3.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{
-											page: author$project$Main$TopPage(newTopModel)
+											page: author$project$Main$TopPage(newPageModel)
 										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$TopMsg, topCmd));
+									A2(elm$core$Platform$Cmd$map, author$project$Main$TopMsg, pageCmd));
 							} else {
 								break _n2$3;
 							}
 						case 'UsersMsg':
 							if (_n2.b.$ === 'UsersPage') {
-								var usersMsg = _n2.a.a;
-								var usersModel = _n2.b.a;
-								var _n4 = A2(author$project$Page$Users$update, usersMsg, usersModel);
-								var newUsersModel = _n4.a;
-								var usersCmd = _n4.b;
+								var pageMsg = _n2.a.a;
+								var pageModel = _n2.b.a;
+								var _n4 = A2(author$project$Page$Users$update, pageMsg, pageModel);
+								var newPageModel = _n4.a;
+								var pageCmd = _n4.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{
-											page: author$project$Main$UsersPage(newUsersModel)
+											page: author$project$Main$UsersPage(newPageModel)
 										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+									A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, pageCmd));
 							} else {
 								break _n2$3;
 							}
 						case 'UserMsg':
 							if (_n2.b.$ === 'UserPage') {
-								var userMsg = _n2.a.a;
-								var userModel = _n2.b.a;
-								var _n5 = A2(author$project$Page$User$update, userMsg, userModel);
-								var newUserModel = _n5.a;
-								var userCmd = _n5.b;
+								var pageMsg = _n2.a.a;
+								var pageModel = _n2.b.a;
+								var _n5 = A2(author$project$Page$User$update, pageMsg, pageModel);
+								var newPageModel = _n5.a;
+								var pageCmd = _n5.b;
 								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{
-											page: author$project$Main$UserPage(newUserModel)
+											page: author$project$Main$UserPage(newPageModel)
 										}),
-									A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
+									A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, pageCmd));
 							} else {
 								break _n2$3;
 							}
