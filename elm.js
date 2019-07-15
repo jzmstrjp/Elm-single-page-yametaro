@@ -6662,60 +6662,67 @@ var author$project$Main$update = F2(
 					author$project$Main$goTo,
 					author$project$Route$parse(url),
 					model);
-			case 'TopMsg':
-				var topMsg = msg.a;
-				var _n2 = model.page;
-				if (_n2.$ === 'TopPage') {
-					var topModel = _n2.a;
-					var _n3 = A2(author$project$Page$Top$update, topMsg, topModel);
-					var newTopModel = _n3.a;
-					var topCmd = _n3.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: author$project$Main$TopPage(newTopModel)
-							}),
-						A2(elm$core$Platform$Cmd$map, author$project$Main$TopMsg, topCmd));
-				} else {
-					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-				}
-			case 'UsersMsg':
-				var usersMsg = msg.a;
-				var _n4 = model.page;
-				if (_n4.$ === 'UsersPage') {
-					var usersModel = _n4.a;
-					var _n5 = A2(author$project$Page$Users$update, usersMsg, usersModel);
-					var newUsersModel = _n5.a;
-					var usersCmd = _n5.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: author$project$Main$UsersPage(newUsersModel)
-							}),
-						A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
-				} else {
-					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-				}
 			default:
-				var userMsg = msg.a;
-				var _n6 = model.page;
-				if (_n6.$ === 'UserPage') {
-					var userModel = _n6.a;
-					var _n7 = A2(author$project$Page$User$update, userMsg, userModel);
-					var newUserModel = _n7.a;
-					var userCmd = _n7.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: author$project$Main$UserPage(newUserModel)
-							}),
-						A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
-				} else {
-					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+				var _n2 = _Utils_Tuple2(msg, model.page);
+				_n2$3:
+				while (true) {
+					switch (_n2.a.$) {
+						case 'TopMsg':
+							if (_n2.b.$ === 'TopPage') {
+								var topMsg = _n2.a.a;
+								var topModel = _n2.b.a;
+								var _n3 = A2(author$project$Page$Top$update, topMsg, topModel);
+								var newTopModel = _n3.a;
+								var topCmd = _n3.b;
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{
+											page: author$project$Main$TopPage(newTopModel)
+										}),
+									A2(elm$core$Platform$Cmd$map, author$project$Main$TopMsg, topCmd));
+							} else {
+								break _n2$3;
+							}
+						case 'UsersMsg':
+							if (_n2.b.$ === 'UsersPage') {
+								var usersMsg = _n2.a.a;
+								var usersModel = _n2.b.a;
+								var _n4 = A2(author$project$Page$Users$update, usersMsg, usersModel);
+								var newUsersModel = _n4.a;
+								var usersCmd = _n4.b;
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{
+											page: author$project$Main$UsersPage(newUsersModel)
+										}),
+									A2(elm$core$Platform$Cmd$map, author$project$Main$UsersMsg, usersCmd));
+							} else {
+								break _n2$3;
+							}
+						case 'UserMsg':
+							if (_n2.b.$ === 'UserPage') {
+								var userMsg = _n2.a.a;
+								var userModel = _n2.b.a;
+								var _n5 = A2(author$project$Page$User$update, userMsg, userModel);
+								var newUserModel = _n5.a;
+								var userCmd = _n5.b;
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{
+											page: author$project$Main$UserPage(newUserModel)
+										}),
+									A2(elm$core$Platform$Cmd$map, author$project$Main$UserMsg, userCmd));
+							} else {
+								break _n2$3;
+							}
+						default:
+							break _n2$3;
+					}
 				}
+				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 		}
 	});
 var elm$html$Html$a = _VirtualDom_node('a');

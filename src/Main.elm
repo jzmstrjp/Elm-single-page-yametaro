@@ -76,9 +76,9 @@ update msg model =
         UrlChanged url ->
             goTo (Route.parse url) model
 
-        TopMsg topMsg ->
-            case model.page of
-                TopPage topModel ->
+        _ ->
+            case ( msg, model.page ) of
+                ( TopMsg topMsg, TopPage topModel ) ->
                     let
                         ( newTopModel, topCmd ) =
                             Page.Top.update topMsg topModel
@@ -87,12 +87,7 @@ update msg model =
                     , Cmd.map TopMsg topCmd
                     )
 
-                _ ->
-                    ( model, Cmd.none )
-
-        UsersMsg usersMsg ->
-            case model.page of
-                UsersPage usersModel ->
+                ( UsersMsg usersMsg, UsersPage usersModel ) ->
                     let
                         ( newUsersModel, usersCmd ) =
                             Page.Users.update usersMsg usersModel
@@ -101,12 +96,7 @@ update msg model =
                     , Cmd.map UsersMsg usersCmd
                     )
 
-                _ ->
-                    ( model, Cmd.none )
-
-        UserMsg userMsg ->
-            case model.page of
-                UserPage userModel ->
+                ( UserMsg userMsg, UserPage userModel ) ->
                     let
                         ( newUserModel, userCmd ) =
                             Page.User.update userMsg userModel
@@ -115,7 +105,7 @@ update msg model =
                     , Cmd.map UserMsg userCmd
                     )
 
-                _ ->
+                ( _, _ ) ->
                     ( model, Cmd.none )
 
 
