@@ -86,6 +86,5 @@ viewUser user =
     li []
         [ ul []
             [ li [] [ a [ href <| "/user/" ++ user.id ] [ text <| "名前: " ++ user.name ] ]
-            , li [] [ img [ src user.avatar ] [] ]
             ]
         ]

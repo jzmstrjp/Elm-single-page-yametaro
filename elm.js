@@ -5041,23 +5041,20 @@ var author$project$Main$makeModelAndCmdTuple = F4(
 var author$project$Api$GotUser = function (a) {
 	return {$: 'GotUser', a: a};
 };
-var author$project$Api$User = F6(
-	function (id, name, avatar, age, height, weight) {
-		return {age: age, avatar: avatar, height: height, id: id, name: name, weight: weight};
+var author$project$Api$User = F3(
+	function (id, name, age) {
+		return {age: age, id: id, name: name};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
 var elm$json$Json$Decode$int = _Json_decodeInt;
-var elm$json$Json$Decode$map6 = _Json_map6;
+var elm$json$Json$Decode$map3 = _Json_map3;
 var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Api$userDecorder = A7(
-	elm$json$Json$Decode$map6,
+var author$project$Api$userDecorder = A4(
+	elm$json$Json$Decode$map3,
 	author$project$Api$User,
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'avatar', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'age', elm$json$Json$Decode$int),
-	A2(elm$json$Json$Decode$field, 'height', elm$json$Json$Decode$int),
-	A2(elm$json$Json$Decode$field, 'weight', elm$json$Json$Decode$int));
+	A2(elm$json$Json$Decode$field, 'age', elm$json$Json$Decode$int));
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -5943,7 +5940,7 @@ var author$project$Api$getUser = function (userId) {
 	return elm$http$Http$get(
 		{
 			expect: A2(elm$http$Http$expectJson, author$project$Api$GotUser, author$project$Api$userDecorder),
-			url: 'https://5d118a66bebb9800143d21f8.mockapi.io/users/' + userId
+			url: 'https://5d52c1833432e70014e6bc8e.mockapi.io/users/' + userId
 		});
 };
 var author$project$Page$User$Loading = {$: 'Loading'};
@@ -5960,7 +5957,7 @@ var author$project$Api$usersDecorder = elm$json$Json$Decode$list(author$project$
 var author$project$Api$getUsers = elm$http$Http$get(
 	{
 		expect: A2(elm$http$Http$expectJson, author$project$Api$GotUsers, author$project$Api$usersDecorder),
-		url: 'https://5d118a66bebb9800143d21f8.mockapi.io/users'
+		url: 'https://5d52c1833432e70014e6bc8e.mockapi.io/users'
 	});
 var author$project$Page$Users$Loading = {$: 'Loading'};
 var author$project$Page$Users$init = _Utils_Tuple2(
@@ -6819,15 +6816,8 @@ var author$project$Page$Top$view = function (model) {
 					]))
 			]));
 };
-var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$ul = _VirtualDom_node('ul');
-var elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
 var author$project$Page$User$viewGif = function (model) {
 	var _n0 = model.state;
 	switch (_n0.$) {
@@ -6861,43 +6851,6 @@ var author$project$Page$User$viewGif = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('名前: ' + user.name)
-							])),
-						A2(
-						elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$img,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$src(user.avatar)
-									]),
-								_List_Nil)
-							])),
-						A2(
-						elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								elm$html$Html$text(
-								'年齢: ' + elm$core$String$fromInt(user.age))
-							])),
-						A2(
-						elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								elm$html$Html$text(
-								'身長: ' + elm$core$String$fromInt(user.height))
-							])),
-						A2(
-						elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								elm$html$Html$text(
-								'体重: ' + elm$core$String$fromInt(user.weight))
 							]))
 					]));
 	}
@@ -6945,19 +6898,6 @@ var author$project$Page$Users$viewUser = function (user) {
 									[
 										elm$html$Html$text('名前: ' + user.name)
 									]))
-							])),
-						A2(
-						elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$img,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$src(user.avatar)
-									]),
-								_List_Nil)
 							]))
 					]))
 			]));

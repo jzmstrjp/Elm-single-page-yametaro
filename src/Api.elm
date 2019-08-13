@@ -7,10 +7,7 @@ import Json.Decode exposing (Decoder, field, map6)
 type alias User =
     { id : UserId
     , name : String
-    , avatar : String
     , age : Int
-    , height : Int
-    , weight : Int
     }
 
 
@@ -26,7 +23,7 @@ type Msg
 getUsers : Cmd Msg
 getUsers =
     Http.get
-        { url = "https://5d118a66bebb9800143d21f8.mockapi.io/users"
+        { url = "https://5d52c1833432e70014e6bc8e.mockapi.io/users"
         , expect = Http.expectJson GotUsers usersDecorder
         }
 
@@ -34,7 +31,7 @@ getUsers =
 getUser : UserId -> Cmd Msg
 getUser userId =
     Http.get
-        { url = "https://5d118a66bebb9800143d21f8.mockapi.io/users/" ++ userId
+        { url = "https://5d52c1833432e70014e6bc8e.mockapi.io/users/" ++ userId
         , expect = Http.expectJson GotUser userDecorder
         }
 
@@ -46,10 +43,7 @@ usersDecorder =
 
 userDecorder : Decoder User
 userDecorder =
-    Json.Decode.map6 User
+    Json.Decode.map3 User
         (field "id" Json.Decode.string)
         (field "name" Json.Decode.string)
-        (field "avatar" Json.Decode.string)
         (field "age" Json.Decode.int)
-        (field "height" Json.Decode.int)
-        (field "weight" Json.Decode.int)
