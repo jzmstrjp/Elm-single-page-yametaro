@@ -8,18 +8,24 @@ import Html.Events exposing (onClick)
 
 type alias Model =
     { title : String
+    , newUserInfo : Api.User
     , state : State
     }
 
 
 type State
-    = Hoge
+    = Start
+    | Registed
 
 
 init : ( Model, Cmd Msg )
 init =
     ( { title = "ユーザー登録ページ"
-      , state = Hoge
+      , state = Start
+      , newUserInfo =
+            { id = ""
+            , name = ""
+            }
       }
     , Cmd.none
     )
@@ -30,14 +36,36 @@ init =
 
 
 type Msg
-    = Msg1
+    = SubmitPost
+    | UpdateId String
+    | UpdateName String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Msg1 ->
-            ( model, Cmd.none )
+        SubmitPost ->
+            ( { model | state = Registed }, Cmd.none )
+
+        UpdateId str ->
+            let
+                prevStateNewUserInfo =
+                    model.newUserInfo
+
+                newStateNewUserInfo =
+                    { prevStateNewUserInfo | id = str }
+            in
+            ( { model | newUserInfo = newStateNewUserInfo }, Cmd.none )
+
+        UpdateName str ->
+            let
+                prevStateNewUserInfo =
+                    model.newUserInfo
+
+                newStateNewUserInfo =
+                    { prevStateNewUserInfo | name = str }
+            in
+            ( { model | newUserInfo = newStateNewUserInfo }, Cmd.none )
 
 
 
@@ -55,7 +83,14 @@ view model =
 viewGif : Model -> Html Msg
 viewGif model =
     case model.state of
-        Hoge ->
+        Start ->
             div []
-                [ text "データが取得できませんでした。"
+                [ p [] [ label [] [ text "ID", input [ name "id" ] [] ] ]
+                , p [] [ label [] [ text "名前", input [ name "name" ] [] ] ]
+                , p [] [ button [ onClick SubmitPost ] [ text "登録" ] ]
+                ]
+
+        Registed ->
+            div []
+                [ text "登録しました。"
                 ]

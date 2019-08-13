@@ -5044,27 +5044,29 @@ var author$project$Main$makeModelAndCmdTuple = F4(
 				}),
 			A2(elm$core$Platform$Cmd$map, msgType, pageCmd));
 	});
-var author$project$Page$Regist$Hoge = {$: 'Hoge'};
+var author$project$Page$Regist$Start = {$: 'Start'};
 var author$project$Page$Regist$init = _Utils_Tuple2(
-	{state: author$project$Page$Regist$Hoge, title: 'ユーザー登録ページ'},
+	{
+		newUserInfo: {id: '', name: ''},
+		state: author$project$Page$Regist$Start,
+		title: 'ユーザー登録ページ'
+	},
 	elm$core$Platform$Cmd$none);
 var author$project$Api$GotUser = function (a) {
 	return {$: 'GotUser', a: a};
 };
-var author$project$Api$User = F3(
-	function (id, name, age) {
-		return {age: age, id: id, name: name};
+var author$project$Api$User = F2(
+	function (id, name) {
+		return {id: id, name: name};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$int = _Json_decodeInt;
-var elm$json$Json$Decode$map3 = _Json_map3;
+var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Api$userDecorder = A4(
-	elm$json$Json$Decode$map3,
+var author$project$Api$userDecorder = A3(
+	elm$json$Json$Decode$map2,
 	author$project$Api$User,
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'age', elm$json$Json$Decode$int));
+	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string));
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -6012,9 +6014,39 @@ var author$project$Main$goTo = F2(
 			}
 		}
 	});
+var author$project$Page$Regist$Registed = {$: 'Registed'};
 var author$project$Page$Regist$update = F2(
 	function (msg, model) {
-		return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'SubmitPost':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: author$project$Page$Regist$Registed}),
+					elm$core$Platform$Cmd$none);
+			case 'UpdateId':
+				var str = msg.a;
+				var prevStateNewUserInfo = model.newUserInfo;
+				var newStateNewUserInfo = _Utils_update(
+					prevStateNewUserInfo,
+					{id: str});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newUserInfo: newStateNewUserInfo}),
+					elm$core$Platform$Cmd$none);
+			default:
+				var str = msg.a;
+				var prevStateNewUserInfo = model.newUserInfo;
+				var newStateNewUserInfo = _Utils_update(
+					prevStateNewUserInfo,
+					{name: str});
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newUserInfo: newStateNewUserInfo}),
+					elm$core$Platform$Cmd$none);
+		}
 	});
 var author$project$Page$Top$update = F2(
 	function (msg, model) {
@@ -6466,7 +6498,6 @@ var elm$core$Task$perform = F2(
 				A2(elm$core$Task$map, toMessage, task)));
 	});
 var elm$json$Json$Decode$map = _Json_map1;
-var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$succeed = _Json_succeed;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -6795,15 +6826,102 @@ var author$project$Main$viewNotFound = _List_fromArray(
 					]))
 			]))
 	]);
+var author$project$Page$Regist$SubmitPost = {$: 'SubmitPost'};
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$label = _VirtualDom_node('label');
+var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var author$project$Page$Regist$viewGif = function (model) {
 	var _n0 = model.state;
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				elm$html$Html$text('データが取得できませんでした。')
-			]));
+	if (_n0.$ === 'Start') {
+		return A2(
+			elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$label,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('ID'),
+									A2(
+									elm$html$Html$input,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$name('id')
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$label,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('名前'),
+									A2(
+									elm$html$Html$input,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$name('name')
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(author$project$Page$Regist$SubmitPost)
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('登録')
+								]))
+						]))
+				]));
+	} else {
+		return A2(
+			elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text('登録しました。')
+				]));
+	}
 };
 var elm$html$Html$h2 = _VirtualDom_node('h2');
 var author$project$Page$Regist$view = function (model) {
@@ -6824,24 +6942,6 @@ var author$project$Page$Regist$view = function (model) {
 };
 var author$project$Page$Top$Decrement = {$: 'Decrement'};
 var author$project$Page$Top$Increment = {$: 'Increment'};
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
 var author$project$Page$Top$view = function (model) {
 	return A2(
 		elm$html$Html$div,

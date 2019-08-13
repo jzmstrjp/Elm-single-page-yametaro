@@ -7,7 +7,6 @@ import Json.Decode exposing (Decoder, field, map6)
 type alias User =
     { id : UserId
     , name : String
-    , age : Int
     }
 
 
@@ -43,7 +42,6 @@ usersDecorder =
 
 userDecorder : Decoder User
 userDecorder =
-    Json.Decode.map3 User
+    Json.Decode.map2 User
         (field "id" Json.Decode.string)
         (field "name" Json.Decode.string)
-        (field "age" Json.Decode.int)
