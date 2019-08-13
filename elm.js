@@ -7137,11 +7137,27 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$a,
 												_List_fromArray(
 													[
-														elm$html$Html$Attributes$href('/user/')
+														elm$html$Html$Attributes$href('/user')
 													]),
 												_List_fromArray(
 													[
 														elm$html$Html$text('ユーザー 一覧')
+													]))
+											])),
+										A2(
+										elm$html$Html$li,
+										_List_Nil,
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$a,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$href('/regist')
+													]),
+												_List_fromArray(
+													[
+														elm$html$Html$text('ユーザー 登録')
 													]))
 											])),
 										A2(
