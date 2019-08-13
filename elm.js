@@ -5007,6 +5007,12 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (_n0) {
 	return elm$core$Platform$Sub$none;
 };
+var author$project$Main$RegistMsg = function (a) {
+	return {$: 'RegistMsg', a: a};
+};
+var author$project$Main$RegistPage = function (a) {
+	return {$: 'RegistPage', a: a};
+};
 var author$project$Main$TopMsg = function (a) {
 	return {$: 'TopMsg', a: a};
 };
@@ -5038,6 +5044,10 @@ var author$project$Main$makeModelAndCmdTuple = F4(
 				}),
 			A2(elm$core$Platform$Cmd$map, msgType, pageCmd));
 	});
+var author$project$Page$Regist$Hoge = {$: 'Hoge'};
+var author$project$Page$Regist$init = _Utils_Tuple2(
+	{state: author$project$Page$Regist$Hoge, title: 'ユーザー登録ページ'},
+	elm$core$Platform$Cmd$none);
 var author$project$Api$GotUser = function (a) {
 	return {$: 'GotUser', a: a};
 };
@@ -5988,7 +5998,7 @@ var author$project$Main$goTo = F2(
 				case 'Users':
 					var _n2 = maybeRoute.a;
 					return A4(author$project$Main$makeModelAndCmdTuple, author$project$Page$Users$init, author$project$Main$UsersMsg, author$project$Main$UsersPage, model);
-				default:
+				case 'User':
 					var userId = maybeRoute.a.a;
 					return A4(
 						author$project$Main$makeModelAndCmdTuple,
@@ -5996,8 +6006,15 @@ var author$project$Main$goTo = F2(
 						author$project$Main$UserMsg,
 						author$project$Main$UserPage,
 						model);
+				default:
+					var _n3 = maybeRoute.a;
+					return A4(author$project$Main$makeModelAndCmdTuple, author$project$Page$Regist$init, author$project$Main$RegistMsg, author$project$Main$RegistPage, model);
 			}
 		}
+	});
+var author$project$Page$Regist$update = F2(
+	function (msg, model) {
+		return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 	});
 var author$project$Page$Top$update = F2(
 	function (msg, model) {
@@ -6074,6 +6091,7 @@ var author$project$Page$Users$update = F2(
 			return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Route$Regist = {$: 'Regist'};
 var author$project$Route$Top = {$: 'Top'};
 var author$project$Route$User = function (a) {
 	return {$: 'User', a: a};
@@ -6251,7 +6269,11 @@ var author$project$Route$parser = elm$url$Url$Parser$oneOf(
 			A2(
 				elm$url$Url$Parser$slash,
 				elm$url$Url$Parser$s('user'),
-				elm$url$Url$Parser$string))
+				elm$url$Url$Parser$string)),
+			A2(
+			elm$url$Url$Parser$map,
+			author$project$Route$Regist,
+			elm$url$Url$Parser$s('regist'))
 		]));
 var elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
@@ -6660,7 +6682,7 @@ var author$project$Main$update = F2(
 					model);
 			default:
 				var _n2 = _Utils_Tuple2(msg, model.page);
-				_n2$3:
+				_n2$4:
 				while (true) {
 					switch (_n2.a.$) {
 						case 'TopMsg':
@@ -6674,7 +6696,7 @@ var author$project$Main$update = F2(
 									author$project$Main$TopPage,
 									model);
 							} else {
-								break _n2$3;
+								break _n2$4;
 							}
 						case 'UsersMsg':
 							if (_n2.b.$ === 'UsersPage') {
@@ -6687,7 +6709,7 @@ var author$project$Main$update = F2(
 									author$project$Main$UsersPage,
 									model);
 							} else {
-								break _n2$3;
+								break _n2$4;
 							}
 						case 'UserMsg':
 							if (_n2.b.$ === 'UserPage') {
@@ -6700,10 +6722,23 @@ var author$project$Main$update = F2(
 									author$project$Main$UserPage,
 									model);
 							} else {
-								break _n2$3;
+								break _n2$4;
+							}
+						case 'RegistMsg':
+							if (_n2.b.$ === 'RegistPage') {
+								var pageMsg = _n2.a.a;
+								var pageModel = _n2.b.a;
+								return A4(
+									author$project$Main$makeModelAndCmdTuple,
+									A2(author$project$Page$Regist$update, pageMsg, pageModel),
+									author$project$Main$RegistMsg,
+									author$project$Main$RegistPage,
+									model);
+							} else {
+								break _n2$4;
 							}
 						default:
-							break _n2$3;
+							break _n2$4;
 					}
 				}
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
@@ -6760,6 +6795,33 @@ var author$project$Main$viewNotFound = _List_fromArray(
 					]))
 			]))
 	]);
+var author$project$Page$Regist$viewGif = function (model) {
+	var _n0 = model.state;
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$text('データが取得できませんでした。')
+			]));
+};
+var elm$html$Html$h2 = _VirtualDom_node('h2');
+var author$project$Page$Regist$view = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$h2,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Random Cats')
+					])),
+				author$project$Page$Regist$viewGif(model)
+			]));
+};
 var author$project$Page$Top$Decrement = {$: 'Decrement'};
 var author$project$Page$Top$Increment = {$: 'Increment'};
 var elm$html$Html$button = _VirtualDom_node('button');
@@ -6855,7 +6917,6 @@ var author$project$Page$User$viewGif = function (model) {
 					]));
 	}
 };
-var elm$html$Html$h2 = _VirtualDom_node('h2');
 var author$project$Page$User$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -6964,7 +7025,7 @@ var author$project$Main$content = function (model) {
 					author$project$Main$UsersMsg,
 					author$project$Page$Users$view(usersPageModel))
 				]);
-		default:
+		case 'UserPage':
 			var userPageModel = _n0.a;
 			return _List_fromArray(
 				[
@@ -6973,17 +7034,29 @@ var author$project$Main$content = function (model) {
 					author$project$Main$UserMsg,
 					author$project$Page$User$view(userPageModel))
 				]);
+		default:
+			var registPageModel = _n0.a;
+			return _List_fromArray(
+				[
+					A2(
+					elm$html$Html$map,
+					author$project$Main$RegistMsg,
+					author$project$Page$Regist$view(registPageModel))
+				]);
 	}
 };
 var author$project$Main$getTitle = function (page) {
 	switch (page.$) {
 		case 'NotFound':
-			var model = page.a;
-			return model.title;
+			var title = page.a.title;
+			return title;
 		case 'TopPage':
 			var model = page.a;
 			return model.title;
 		case 'UsersPage':
+			var model = page.a;
+			return model.title;
+		case 'UserPage':
 			var model = page.a;
 			return model.title;
 		default:

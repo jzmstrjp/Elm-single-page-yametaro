@@ -12,6 +12,7 @@ type Route
     = Top
     | Users
     | User UserId
+    | Regist
 
 
 
@@ -24,6 +25,7 @@ parser =
         [ map Top top
         , map Users (s "user")
         , map User (s "user" </> string)
+        , map Regist (s "regist")
         ]
 
 

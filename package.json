@@ -16,8 +16,5 @@
   "bugs": {
     "url": "https://github.com/jzmstrjp/Elm-single-page-yametaro/issues"
   },
-  "Toppage": "https://github.com/jzmstrjp/Elm-single-page-yametaro#readme",
-  "devDependencies": {
-    "elm": "^0.19.0-bugfix2"
-  }
+  "Toppage": "https://github.com/jzmstrjp/Elm-single-page-yametaro#readme"
 }

@@ -4,6 +4,7 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Page.Regist
 import Page.Top
 import Page.User
 import Page.Users
@@ -43,6 +44,7 @@ type Page
     | TopPage Page.Top.Model
     | UsersPage Page.Users.Model
     | UserPage Page.User.Model
+    | RegistPage Page.Regist.Model
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -60,6 +62,7 @@ type Msg
     | TopMsg Page.Top.Msg
     | UsersMsg Page.Users.Msg
     | UserMsg Page.User.Msg
+    | RegistMsg Page.Regist.Msg
 
 
 makeModelAndCmdTuple :
@@ -99,6 +102,9 @@ update msg model =
                 ( UserMsg pageMsg, UserPage pageModel ) ->
                     makeModelAndCmdTuple (Page.User.update pageMsg pageModel) UserMsg UserPage model
 
+                ( RegistMsg pageMsg, RegistPage pageModel ) ->
+                    makeModelAndCmdTuple (Page.Regist.update pageMsg pageModel) RegistMsg RegistPage model
+
                 ( _, _ ) ->
                     ( model, Cmd.none )
 
@@ -119,6 +125,9 @@ goTo maybeRoute model =
 
         Just (Route.User userId) ->
             makeModelAndCmdTuple (Page.User.init userId) UserMsg UserPage model
+
+        Just Route.Regist ->
+            makeModelAndCmdTuple Page.Regist.init RegistMsg RegistPage model
 
 
 
@@ -166,8 +175,8 @@ view model =
 getTitle : Page -> String
 getTitle page =
     case page of
-        NotFound model ->
-            model.title
+        NotFound { title } ->
+            title
 
         TopPage model ->
             model.title
@@ -176,6 +185,9 @@ getTitle page =
             model.title
 
         UserPage model ->
+            model.title
+
+        RegistPage model ->
             model.title
 
 
@@ -193,6 +205,9 @@ content model =
 
         UserPage userPageModel ->
             [ Page.User.view userPageModel |> Html.map UserMsg ]
+
+        RegistPage registPageModel ->
+            [ Page.Regist.view registPageModel |> Html.map RegistMsg ]
 
 
 viewNotFound : List (Html Msg)
