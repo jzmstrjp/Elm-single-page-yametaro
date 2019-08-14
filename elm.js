@@ -7151,6 +7151,14 @@ var author$project$Page$User$viewGif = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('名前: ' + user.name)
+							])),
+						A2(
+						elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								'年齢: ' + elm$core$String$fromInt(user.age))
 							]))
 					]));
 	}

@@ -81,4 +81,5 @@ viewGif model =
             ul []
                 [ li [] [ text <| "ID: " ++ user.id ]
                 , li [] [ text <| "名前: " ++ user.name ]
+                , li [] [ text <| "年齢: " ++ String.fromInt user.age ]
                 ]
