@@ -4,7 +4,7 @@
   "description": "elm spa",
   "main": "elm.js",
   "scripts": {
-    "dev": "elm-live src/Main.elm --pushstate --start-page=custom.html -- --output=elm.js",
+    "dev": "elm-live src/Main.elm --pushstate --start-page=custom.html -- --output=elm.js --debug",
     "build": "elm make src/Main.elm --output elm.js"
   },
   "repository": {

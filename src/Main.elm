@@ -49,7 +49,8 @@ type Page
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model key (TopPage Page.Top.init), Cmd.none )
+    Model key (TopPage Page.Top.init)
+        |> goTo (Route.parse url)
 
 
 
