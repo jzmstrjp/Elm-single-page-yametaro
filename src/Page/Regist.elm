@@ -3,12 +3,15 @@ module Page.Regist exposing (Model, Msg, init, update, view)
 import Api
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
+import Http
+import Json.Encode
 
 
 type alias Model =
     { title : String
     , newUserInfo : Api.User
+    , resultUserInfo : Api.User
     , state : State
     }
 
@@ -25,6 +28,12 @@ init =
       , newUserInfo =
             { id = ""
             , name = ""
+            , age = 0
+            }
+      , resultUserInfo =
+            { id = ""
+            , name = ""
+            , age = 0
             }
       }
     , Cmd.none
@@ -37,7 +46,8 @@ init =
 
 type Msg
     = SubmitPost
-    | UpdateId String
+    | PostComplete Api.Msg
+    | UpdateAge String
     | UpdateName String
 
 
@@ -45,15 +55,42 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SubmitPost ->
-            ( { model | state = Registed }, Cmd.none )
+            let
+                newUserInfo : Json.Encode.Value
+                newUserInfo =
+                    Json.Encode.object
+                        [ ( "name", Json.Encode.string model.newUserInfo.name )
+                        , ( "age", Json.Encode.int model.newUserInfo.age )
+                        ]
+            in
+            ( model, Cmd.map PostComplete <| Api.postUser newUserInfo )
 
-        UpdateId str ->
+        PostComplete postCompleteMsg ->
+            let
+                newResultUserInfo : Api.User
+                newResultUserInfo =
+                    case postCompleteMsg of
+                        Api.PostComplete result ->
+                            case result of
+                                Ok userInfo ->
+                                    userInfo
+
+                                Err _ ->
+                                    model.resultUserInfo
+
+                        _ ->
+                            model.resultUserInfo
+            in
+            --,
+            ( { model | state = Registed, resultUserInfo = newResultUserInfo }, Cmd.none )
+
+        UpdateAge str ->
             let
                 prevStateNewUserInfo =
                     model.newUserInfo
 
                 newStateNewUserInfo =
-                    { prevStateNewUserInfo | id = str }
+                    { prevStateNewUserInfo | age = Maybe.withDefault 0 <| String.toInt str }
             in
             ( { model | newUserInfo = newStateNewUserInfo }, Cmd.none )
 
@@ -75,8 +112,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h2 [] [ text "Random Cats" ]
-        , viewGif model
+        [ viewGif model
         ]
 
 
@@ -85,12 +121,14 @@ viewGif model =
     case model.state of
         Start ->
             div []
-                [ p [] [ label [] [ text "ID", input [ name "id" ] [] ] ]
-                , p [] [ label [] [ text "名前", input [ name "name" ] [] ] ]
+                [ p [] [ label [] [ text "名前", input [ onInput UpdateName ] [] ] ]
+                , p [] [ label [] [ text "年齢", input [ onInput UpdateAge ] [] ] ]
                 , p [] [ button [ onClick SubmitPost ] [ text "登録" ] ]
                 ]
 
         Registed ->
             div []
-                [ text "登録しました。"
+                [ p [] [ text "登録しました。" ]
+                , p [] [ text <| "名前：" ++ model.resultUserInfo.name ]
+                , p [] [ text <| "年齢：" ++ String.fromInt model.resultUserInfo.age ]
                 ]

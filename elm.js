@@ -5029,7 +5029,8 @@ var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Page$Regist$init = _Utils_Tuple2(
 	{
-		newUserInfo: {id: '', name: ''},
+		newUserInfo: {age: 0, id: '', name: ''},
+		resultUserInfo: {age: 0, id: '', name: ''},
 		state: author$project$Page$Regist$Start,
 		title: 'ユーザー登録ページ'
 	},
@@ -5038,18 +5039,21 @@ var author$project$Page$Top$init = {count: 0, title: 'トップページ'};
 var author$project$Api$GotUser = function (a) {
 	return {$: 'GotUser', a: a};
 };
-var author$project$Api$User = F2(
-	function (id, name) {
-		return {id: id, name: name};
+var author$project$Api$apiUrl = 'https://5d52c1833432e70014e6bc8e.mockapi.io/users';
+var author$project$Api$User = F3(
+	function (id, name, age) {
+		return {age: age, id: id, name: name};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$map2 = _Json_map2;
+var elm$json$Json$Decode$int = _Json_decodeInt;
+var elm$json$Json$Decode$map3 = _Json_map3;
 var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Api$userDecorder = A3(
-	elm$json$Json$Decode$map2,
+var author$project$Api$userDecorder = A4(
+	elm$json$Json$Decode$map3,
 	author$project$Api$User,
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string));
+	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'age', elm$json$Json$Decode$int));
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -5935,7 +5939,7 @@ var author$project$Api$getUser = function (userId) {
 	return elm$http$Http$get(
 		{
 			expect: A2(elm$http$Http$expectJson, author$project$Api$GotUser, author$project$Api$userDecorder),
-			url: 'https://5d52c1833432e70014e6bc8e.mockapi.io/users/' + userId
+			url: author$project$Api$apiUrl + ('/' + userId)
 		});
 };
 var author$project$Page$User$Loading = {$: 'Loading'};
@@ -5952,7 +5956,7 @@ var author$project$Api$usersDecorder = elm$json$Json$Decode$list(author$project$
 var author$project$Api$getUsers = elm$http$Http$get(
 	{
 		expect: A2(elm$http$Http$expectJson, author$project$Api$GotUsers, author$project$Api$usersDecorder),
-		url: 'https://5d52c1833432e70014e6bc8e.mockapi.io/users'
+		url: author$project$Api$apiUrl
 	});
 var author$project$Page$Users$Loading = {$: 'Loading'};
 var author$project$Page$Users$init = _Utils_Tuple2(
@@ -6317,22 +6321,107 @@ var author$project$Main$subscriptions = function (_n0) {
 var author$project$Main$TopMsg = function (a) {
 	return {$: 'TopMsg', a: a};
 };
+var author$project$Api$PostComplete = function (a) {
+	return {$: 'PostComplete', a: a};
+};
+var elm$http$Http$jsonBody = function (value) {
+	return A2(
+		_Http_pair,
+		'application/json',
+		A2(elm$json$Json$Encode$encode, 0, value));
+};
+var elm$http$Http$post = function (r) {
+	return elm$http$Http$request(
+		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: elm$core$Maybe$Nothing, tracker: elm$core$Maybe$Nothing, url: r.url});
+};
+var author$project$Api$postUser = function (value) {
+	return elm$http$Http$post(
+		{
+			body: elm$http$Http$jsonBody(value),
+			expect: A2(elm$http$Http$expectJson, author$project$Api$PostComplete, author$project$Api$userDecorder),
+			url: author$project$Api$apiUrl
+		});
+};
+var author$project$Page$Regist$PostComplete = function (a) {
+	return {$: 'PostComplete', a: a};
+};
 var author$project$Page$Regist$Registed = {$: 'Registed'};
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var elm$core$String$toInt = _String_toInt;
+var elm$json$Json$Encode$int = _Json_wrap;
+var elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			elm$core$List$foldl,
+			F2(
+				function (_n0, obj) {
+					var k = _n0.a;
+					var v = _n0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var elm$json$Json$Encode$string = _Json_wrap;
 var author$project$Page$Regist$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'SubmitPost':
+				var newUserInfo = elm$json$Json$Encode$object(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(
+							'name',
+							elm$json$Json$Encode$string(model.newUserInfo.name)),
+							_Utils_Tuple2(
+							'age',
+							elm$json$Json$Encode$int(model.newUserInfo.age))
+						]));
+				return _Utils_Tuple2(
+					model,
+					A2(
+						elm$core$Platform$Cmd$map,
+						author$project$Page$Regist$PostComplete,
+						author$project$Api$postUser(newUserInfo)));
+			case 'PostComplete':
+				var postCompleteMsg = msg.a;
+				var newResultUserInfo = function () {
+					if (postCompleteMsg.$ === 'PostComplete') {
+						var result = postCompleteMsg.a;
+						if (result.$ === 'Ok') {
+							var userInfo = result.a;
+							return userInfo;
+						} else {
+							return model.resultUserInfo;
+						}
+					} else {
+						return model.resultUserInfo;
+					}
+				}();
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{state: author$project$Page$Regist$Registed}),
+						{resultUserInfo: newResultUserInfo, state: author$project$Page$Regist$Registed}),
 					elm$core$Platform$Cmd$none);
-			case 'UpdateId':
+			case 'UpdateAge':
 				var str = msg.a;
 				var prevStateNewUserInfo = model.newUserInfo;
 				var newStateNewUserInfo = _Utils_update(
 					prevStateNewUserInfo,
-					{id: str});
+					{
+						age: A2(
+							elm$core$Maybe$withDefault,
+							0,
+							elm$core$String$toInt(str))
+					});
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -6499,6 +6588,7 @@ var elm$core$Task$perform = F2(
 				A2(elm$core$Task$map, toMessage, task)));
 	});
 var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$succeed = _Json_succeed;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -6534,7 +6624,6 @@ var elm$core$String$left = F2(
 		return (n < 1) ? '' : A3(elm$core$String$slice, 0, n, string);
 	});
 var elm$core$String$contains = _String_contains;
-var elm$core$String$toInt = _String_toInt;
 var elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
 		return {fragment: fragment, host: host, path: path, port_: port_, protocol: protocol, query: query};
@@ -6781,7 +6870,6 @@ var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$p = _VirtualDom_node('p');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var elm$json$Json$Encode$string = _Json_wrap;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6828,10 +6916,15 @@ var author$project$Main$viewNotFound = _List_fromArray(
 			]))
 	]);
 var author$project$Page$Regist$SubmitPost = {$: 'SubmitPost'};
+var author$project$Page$Regist$UpdateAge = function (a) {
+	return {$: 'UpdateAge', a: a};
+};
+var author$project$Page$Regist$UpdateName = function (a) {
+	return {$: 'UpdateName', a: a};
+};
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
-var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6848,6 +6941,37 @@ var elm$html$Html$Events$onClick = function (msg) {
 		elm$html$Html$Events$on,
 		'click',
 		elm$json$Json$Decode$succeed(msg));
+};
+var elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
+	});
+var elm$html$Html$Events$targetValue = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	elm$json$Json$Decode$string);
+var elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
 var author$project$Page$Regist$viewGif = function (model) {
 	var _n0 = model.state;
@@ -6867,12 +6991,12 @@ var author$project$Page$Regist$viewGif = function (model) {
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text('ID'),
+									elm$html$Html$text('名前'),
 									A2(
 									elm$html$Html$input,
 									_List_fromArray(
 										[
-											elm$html$Html$Attributes$name('id')
+											elm$html$Html$Events$onInput(author$project$Page$Regist$UpdateName)
 										]),
 									_List_Nil)
 								]))
@@ -6887,12 +7011,12 @@ var author$project$Page$Regist$viewGif = function (model) {
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text('名前'),
+									elm$html$Html$text('年齢'),
 									A2(
 									elm$html$Html$input,
 									_List_fromArray(
 										[
-											elm$html$Html$Attributes$name('name')
+											elm$html$Html$Events$onInput(author$project$Page$Regist$UpdateAge)
 										]),
 									_List_Nil)
 								]))
@@ -6920,24 +7044,37 @@ var author$project$Page$Regist$viewGif = function (model) {
 			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text('登録しました。')
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('登録しました。')
+						])),
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('名前：' + model.resultUserInfo.name)
+						])),
+					A2(
+					elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							'年齢：' + elm$core$String$fromInt(model.resultUserInfo.age))
+						]))
 				]));
 	}
 };
-var elm$html$Html$h2 = _VirtualDom_node('h2');
 var author$project$Page$Regist$view = function (model) {
 	return A2(
 		elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2(
-				elm$html$Html$h2,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Random Cats')
-					])),
 				author$project$Page$Regist$viewGif(model)
 			]));
 };
@@ -7018,6 +7155,7 @@ var author$project$Page$User$viewGif = function (model) {
 					]));
 	}
 };
+var elm$html$Html$h2 = _VirtualDom_node('h2');
 var author$project$Page$User$view = function (model) {
 	return A2(
 		elm$html$Html$div,
