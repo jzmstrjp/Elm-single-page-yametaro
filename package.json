@@ -1,7 +1,7 @@
 {
   "name": "elm-single-page-yametaro",
   "version": "1.0.0",
-  "description": "elm spa",
+  "description": "elm spa1",
   "main": "elm.js",
   "scripts": {
     "dev": "elm-live src/Main.elm --pushstate --start-page=custom.html -- --output=elm.js --debug",
